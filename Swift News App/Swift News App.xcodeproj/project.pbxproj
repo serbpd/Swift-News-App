@@ -15,6 +15,7 @@
 		9ABA68F1226FD0C600BC826C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9ABA68EF226FD0C600BC826C /* LaunchScreen.storyboard */; };
 		9ABA68FC226FD0C600BC826C /* Swift_News_AppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ABA68FB226FD0C600BC826C /* Swift_News_AppTests.swift */; };
 		9ABA6907226FD0C600BC826C /* Swift_News_AppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ABA6906226FD0C600BC826C /* Swift_News_AppUITests.swift */; };
+		9ABA69172271066900BC826C /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ABA69162271066900BC826C /* JSONParser.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		9ABA6902226FD0C600BC826C /* Swift News AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Swift News AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9ABA6906226FD0C600BC826C /* Swift_News_AppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Swift_News_AppUITests.swift; sourceTree = "<group>"; };
 		9ABA6908226FD0C600BC826C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9ABA69162271066900BC826C /* JSONParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONParser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +103,7 @@
 			children = (
 				9ABA68E4226FD0C500BC826C /* AppDelegate.swift */,
 				9ABA68E6226FD0C500BC826C /* FirstViewController.swift */,
+				9ABA69162271066900BC826C /* JSONParser.swift */,
 				9ABA68E8226FD0C500BC826C /* SecondViewController.swift */,
 				9ABA68EA226FD0C500BC826C /* Main.storyboard */,
 				9ABA68ED226FD0C600BC826C /* Assets.xcassets */,
@@ -261,6 +264,7 @@
 			files = (
 				9ABA68E9226FD0C500BC826C /* SecondViewController.swift in Sources */,
 				9ABA68E5226FD0C500BC826C /* AppDelegate.swift in Sources */,
+				9ABA69172271066900BC826C /* JSONParser.swift in Sources */,
 				9ABA68E7226FD0C500BC826C /* FirstViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
