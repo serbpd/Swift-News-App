@@ -1,5 +1,5 @@
 //
-//  FirstViewController.swift
+//  FeaturedViewController.swift
 //  Swift News App
 //
 //  Created by Paul on 4/23/19.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class FeaturedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @IBOutlet weak var tableView: UITableView!
     var articles: [Article] = []
@@ -19,12 +19,20 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
         tableView.delegate = self
         tableView.dataSource = self
         
-        JSONParser.shared.getArticles({result in
+        JSONParser.shared.getArticles(table: tableView, { result in
             self.articles = result
+            
+            for art in self.articles {
+                art.setImage(table: self.tableView)
+            }
             DispatchQueue.main.async {
                 self.tableView.reloadData()
             }
         })
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return view.frame.height * 0.18
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -35,15 +43,16 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
         let cell = tableView.dequeueReusableCell(withIdentifier: "articleCell") as! ArticleCell
         cell.title.text = articles[indexPath.item].title
         
-        guard let imgURL = URL(string: articles[indexPath.item].imgURL ?? "") else { return cell }
-        URLSession.shared.dataTask(with: imgURL, completionHandler: { data,_,_ in
-            let img = UIImage(data: data!)
-            DispatchQueue.main.async {
-                cell.img.image = img
-            }
-        }).resume()
+        guard let image = articles[indexPath.item].img else { return cell }
+        cell.img.image = image
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let vc = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "article") as! ArticleViewController
+        vc.article = articles[indexPath.item]
+        self.present(vc, animated: true, completion: nil)
     }
 }
 
@@ -58,6 +67,7 @@ class Article {
     var title: String?
     var descr: String?
     var imgURL: String?
+    var img: UIImage?
     var date: Date?
     var content: String?
     
@@ -69,5 +79,16 @@ class Article {
         self.imgURL = img
         self.date = Date()
         self.content = content
+    }
+    
+    public func setImage(table: UITableView) {
+        guard let url = URL(string: self.imgURL!) else { return }
+        URLSession.shared.dataTask(with: url, completionHandler: { data,_,_ in
+            guard let imgData = data, let img = UIImage(data: imgData) else { return }
+            DispatchQueue.main.async {
+                self.img = img
+                table.reloadData()
+            }
+        }).resume()
     }
 }

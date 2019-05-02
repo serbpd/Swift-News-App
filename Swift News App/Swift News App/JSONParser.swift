@@ -7,12 +7,13 @@
 //
 
 import Foundation
+import UIKit
 
 class JSONParser {
     public static let shared = JSONParser()
     private var resultArticles: [Article] = []
     
-    public func getArticles(query: String = "", country: String = "", cat: String = "", source: String = "", sort: String = "", _ completion: @escaping([Article]) -> Void) {
+    public func getArticles(table: UITableView, query: String = "", country: String = "", cat: String = "", source: String = "", sort: String = "", _ completion: @escaping([Article]) -> Void) {
         var request = "https://newsapi.org/v2/top-headlines?country=us"
         let session = URLSession.shared
         
@@ -30,15 +31,16 @@ class JSONParser {
             }
             
             for article in articles {
-                let author = article["author"] as! String
-                let title = article["title"] as! String
-                let descr = article["description"] as! String
-                let imgURL = article["urlToImage"] as! String
-                let date = article["publishedAt"] as! String
-                let content = article["content"] as! String
+                let author = article["author"] as? String
+                let title = article["title"] as? String
+                let descr = article["description"] as? String
+                let imgURL = article["urlToImage"] as? String
+                let date = article["publishedAt"] as? String
+                let content = article["content"] as? String
                 let s = article["source"] as! [String: Any]
-                let source = s["name"] as! String
-                let a = Article(pub: source, auth: author, title: title, descr: descr, img: imgURL, date: date, content: content)
+                let source = s["name"] as? String
+                
+                let a = Article(pub: source ?? "", auth: author ?? "", title: title ?? "", descr: descr ?? "", img: imgURL ?? "", date: date ?? "", content: content ?? "")
                 self.resultArticles.append(a)
             }
             completion(self.resultArticles)
