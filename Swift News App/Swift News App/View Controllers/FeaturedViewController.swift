@@ -15,7 +15,7 @@ class FeaturedViewController: UIViewController, UITableViewDelegate, UITableView
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+                
         tableView.delegate = self
         tableView.dataSource = self
         
@@ -45,6 +45,8 @@ class FeaturedViewController: UIViewController, UITableViewDelegate, UITableView
         
         guard let image = articles[indexPath.item].img else { return cell }
         cell.img.image = image
+        cell.img.clipsToBounds = true
+        cell.img.layer.cornerRadius = 3
         
         return cell
     }
@@ -52,7 +54,7 @@ class FeaturedViewController: UIViewController, UITableViewDelegate, UITableView
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "article") as! ArticleViewController
         vc.article = articles[indexPath.item]
-        self.present(vc, animated: true, completion: nil)
+        self.navigationController?.pushViewController(vc, animated: true)
     }
 }
 
@@ -68,7 +70,7 @@ class Article {
     var descr: String?
     var imgURL: String?
     var img: UIImage?
-    var date: Date?
+    var date: String?
     var content: String?
     
     public init(pub: String, auth: String, title: String, descr: String, img: String, date: String, content: String) {
@@ -77,8 +79,17 @@ class Article {
         self.title = title
         self.descr = descr
         self.imgURL = img
-        self.date = Date()
         self.content = content
+        
+        let dateStr = date[0...9]
+        let dateFormatterIn = DateFormatter()
+        dateFormatterIn.dateFormat = "yyyy-MM-dd"
+        let dateFormatterOut = DateFormatter()
+        dateFormatterOut.dateFormat = "MMM dd, yyyy"
+        
+        if let newDate = dateFormatterIn.date(from: dateStr) {
+            self.date = dateFormatterOut.string(from: newDate)
+        }
     }
     
     public func setImage(table: UITableView) {
@@ -90,5 +101,13 @@ class Article {
                 table.reloadData()
             }
         }).resume()
+    }
+}
+
+extension String {
+    subscript (bounds: CountableClosedRange<Int>) -> String {
+        let start = index(startIndex, offsetBy: bounds.lowerBound)
+        let end = index(startIndex, offsetBy: bounds.upperBound)
+        return String(self[start...end])
     }
 }
