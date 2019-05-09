@@ -14,6 +14,7 @@ class FeaturedViewController: UIViewController, UITableViewDelegate, UITableView
     @IBOutlet weak var searchBar: UISearchBar!
     
     var articles: [Article] = []
+    var query = ""
     let blurEffect = UIBlurEffect(style: .dark)
     let blurEffectView = UIVisualEffectView()
     let filterView = FilterPopup()
@@ -70,11 +71,27 @@ class FeaturedViewController: UIViewController, UITableViewDelegate, UITableView
     }
     
     @objc func filterArticles() {
-        
+        self.tabBarController?.tabBar.isHidden = false
+        blurEffectView.removeFromSuperview()
+        filterView.removeFromSuperview()
+        if let picker = view.viewWithTag(1337) {
+            picker.removeFromSuperview()
+        }
+        JSONParser.shared.getArticles(table: tableView, query: query, { result in
+            self.articles = result
+            
+            for art in self.articles {
+                art.setImage(table: self.tableView)
+            }
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        })
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let text = searchBar.text, text != "" else { return }
+        query = text
         JSONParser.shared.getArticles(table: tableView, query: text, { result in
             self.articles = result
             
@@ -87,18 +104,21 @@ class FeaturedViewController: UIViewController, UITableViewDelegate, UITableView
             }
         })
     }
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        JSONParser.shared.getArticles(table: tableView, { result in
-            self.articles = result
-            
-            for art in self.articles {
-                art.setImage(table: self.tableView)
-            }
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-                searchBar.resignFirstResponder()
-            }
-        })
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText == "" {
+            query = ""
+            JSONParser.shared.getArticles(table: tableView, { result in
+                self.articles = result
+                
+                for art in self.articles {
+                    art.setImage(table: self.tableView)
+                }
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                    searchBar.resignFirstResponder()
+                }
+            })
+        }
     }
     
     //tableView delegate functions

@@ -25,7 +25,7 @@ class FilterPopup: UIView, UIPickerViewDelegate, UIPickerViewDataSource, UITextF
     let countries: [(name: String, code: String)] = [("Australia", "au"), ("Canada", "ca"), ("Germany", "de"), ("Romania", "ro"), ("United States", "us")]
     let categories: [(name: String, code: String)] = [("Business", "business"), ("Entertainment", "entertainment"), ("General", "general"), ("Health", "health"), ("Science", "science"), ("Sports", "sports"), ("Technology", "technology")]
     let sorts: [(name: String, code: String)] = [("Relevancy", "relevancy"), ("Popularity", "popularity"), ("Date", "publishedAt")]
-    let sources: [(name: String, code: String)] = [("BBC News", "bbc-news"), ("Wall Street Journal", "the-wall-street-journal"), ("Fox News", "fox-news"), ("CNN", "cnn"), ("New York Times", "the-new-york-times"), ("CNBC", "cnbc"), ("The Verge", "the-verge")]
+    let sources: [(name: String, code: String)] = [("BBC News", "bbc-news"), ("CNBC", "cnbc"), ("CNN", "cnn"), ("Fox News", "fox-news"), ("New York Times", "the-new-york-times"), ("The Verge", "the-verge"), ("Wall Street Journal", "the-wall-street-journal")]
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -74,8 +74,8 @@ class FilterPopup: UIView, UIPickerViewDelegate, UIPickerViewDataSource, UITextF
         }
         selectedTxtField = textField
         pickerView.removeFromSuperview()
-        pickerView = UIPickerView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
         superview?.addSubview(pickerView)
+        pickerView.reloadAllComponents()
         pickerView.tag = 1337
         textField.endEditing(true)
         
@@ -93,8 +93,8 @@ class FilterPopup: UIView, UIPickerViewDelegate, UIPickerViewDataSource, UITextF
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return selectedArray.count
     }
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return selectedArray[row].name
+    func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
+        return NSAttributedString(string: selectedArray[row].name, attributes: [.foregroundColor: UIColor.white])
     }
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         //fill the tapped field with selected text, and build parameters for a new search request
