@@ -12,12 +12,26 @@ import UIKit
 class JSONParser {
     public static let shared = JSONParser()
     private var resultArticles: [Article] = []
+    private var newsAPIKey = "9027771a2bb24ecaad4faa45cf46cd96"
     
-    public func getArticles(table: UITableView, query: String = "", country: String = "", cat: String = "", source: String = "", sort: String = "", _ completion: @escaping([Article]) -> Void) {
+    var paramCountry = ""
+    var paramCat = ""
+    var paramSort = ""
+    var paramSrc = ""
+    
+    public func getArticles(table: UITableView, query: String = "", _ completion: @escaping([Article]) -> Void) {
+        resultArticles.removeAll()
         var request = "https://newsapi.org/v2/top-headlines?country=us"
         let session = URLSession.shared
         
-        request.append("&apiKey=9027771a2bb24ecaad4faa45cf46cd96")
+        if query != "" {
+            request.append("&q=\(query)")
+        }
+        if paramCountry != "" {
+            request = request.replacingOccurrences(of: "country=us", with: "country=\(paramCountry)")
+        }
+        
+        request.append("&apiKey=\(newsAPIKey)")
         
         guard let url = URL(string: request) else { return }
         let task = session.dataTask(with: url, completionHandler: { (data, response, error) in
@@ -46,5 +60,12 @@ class JSONParser {
             completion(self.resultArticles)
         })
         task.resume()
+    }
+    
+    public func clearParams() {
+        paramCountry = ""
+        paramSrc = ""
+        paramSort = ""
+        paramCat = ""
     }
 }

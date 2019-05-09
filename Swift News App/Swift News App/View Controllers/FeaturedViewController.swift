@@ -8,16 +8,23 @@
 
 import UIKit
 
-class FeaturedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class FeaturedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, UITabBarDelegate {
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var searchBar: UISearchBar!
+    
     var articles: [Article] = []
+    let blurEffect = UIBlurEffect(style: .dark)
+    let blurEffectView = UIVisualEffectView()
+    let filterView = FilterPopup()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-                
+        
         tableView.delegate = self
         tableView.dataSource = self
+        searchBar.delegate = self
+        blurEffectView.effect = blurEffect
         
         JSONParser.shared.getArticles(table: tableView, { result in
             self.articles = result
@@ -31,14 +38,76 @@ class FeaturedViewController: UIViewController, UITableViewDelegate, UITableView
         })
     }
     
+    @IBAction func showFilters(_ sender: Any) {
+        self.tabBarController?.tabBar.isHidden = true
+        
+        view.addSubview(blurEffectView)
+        blurEffectView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint(item: blurEffectView, attribute: .width, relatedBy: .equal, toItem: view, attribute: .width, multiplier: 1.0, constant: 0).isActive = true
+        NSLayoutConstraint(item: blurEffectView, attribute: .height, relatedBy: .equal, toItem: view, attribute: .height, multiplier: 1.0, constant: 0).isActive = true
+        NSLayoutConstraint(item: blurEffectView, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1.0, constant: 0).isActive = true
+        NSLayoutConstraint(item: blurEffectView, attribute: .centerY, relatedBy: .equal, toItem: view, attribute: .centerY, multiplier: 1.0, constant: 0).isActive = true
+        
+        filterView.clipsToBounds = true
+        filterView.layer.cornerRadius = 10
+        view.addSubview(filterView)
+        filterView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint(item: filterView, attribute: .width, relatedBy: .equal, toItem: view, attribute: .width, multiplier: 0.8, constant: 0).isActive = true
+        NSLayoutConstraint(item: filterView, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1.0, constant: 0).isActive = true
+        NSLayoutConstraint(item: filterView, attribute: .centerY, relatedBy: .equal, toItem: view, attribute: .centerY, multiplier: 1.0, constant: 0).isActive = true
+        
+        filterView.cancelBtn.addTarget(self, action: #selector(cancelFilter), for: .touchUpInside)
+        filterView.searchBtn.addTarget(self, action: #selector(filterArticles), for: .touchUpInside)
+    }
+    
+    @objc func cancelFilter() {
+        self.tabBarController?.tabBar.isHidden = false
+        blurEffectView.removeFromSuperview()
+        filterView.removeFromSuperview()
+        if let picker = view.viewWithTag(1337) {
+            picker.removeFromSuperview()
+        }
+    }
+    
+    @objc func filterArticles() {
+        
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let text = searchBar.text, text != "" else { return }
+        JSONParser.shared.getArticles(table: tableView, query: text, { result in
+            self.articles = result
+            
+            for art in self.articles {
+                art.setImage(table: self.tableView)
+            }
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+                searchBar.resignFirstResponder()
+            }
+        })
+    }
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        JSONParser.shared.getArticles(table: tableView, { result in
+            self.articles = result
+            
+            for art in self.articles {
+                art.setImage(table: self.tableView)
+            }
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+                searchBar.resignFirstResponder()
+            }
+        })
+    }
+    
+    //tableView delegate functions
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return view.frame.height * 0.18
     }
-
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return articles.count
     }
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "articleCell") as! ArticleCell
         cell.title.text = articles[indexPath.item].title
@@ -50,64 +119,9 @@ class FeaturedViewController: UIViewController, UITableViewDelegate, UITableView
         
         return cell
     }
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "article") as! ArticleViewController
         vc.article = articles[indexPath.item]
         self.navigationController?.pushViewController(vc, animated: true)
-    }
-}
-
-class ArticleCell: UITableViewCell {
-    @IBOutlet weak var img: UIImageView!
-    @IBOutlet weak var title: UILabel!
-}
-
-class Article {
-    var publisher: String?
-    var author: String?
-    var title: String?
-    var descr: String?
-    var imgURL: String?
-    var img: UIImage?
-    var date: String?
-    var content: String?
-    
-    public init(pub: String, auth: String, title: String, descr: String, img: String, date: String, content: String) {
-        self.publisher = pub
-        self.author = auth
-        self.title = title
-        self.descr = descr
-        self.imgURL = img
-        self.content = content
-        
-        let dateStr = date[0...9]
-        let dateFormatterIn = DateFormatter()
-        dateFormatterIn.dateFormat = "yyyy-MM-dd"
-        let dateFormatterOut = DateFormatter()
-        dateFormatterOut.dateFormat = "MMM dd, yyyy"
-        
-        if let newDate = dateFormatterIn.date(from: dateStr) {
-            self.date = dateFormatterOut.string(from: newDate)
-        }
-    }
-    
-    public func setImage(table: UITableView) {
-        guard let url = URL(string: self.imgURL!) else { return }
-        URLSession.shared.dataTask(with: url, completionHandler: { data,_,_ in
-            guard let imgData = data, let img = UIImage(data: imgData) else { return }
-            DispatchQueue.main.async {
-                self.img = img
-                table.reloadData()
-            }
-        }).resume()
-    }
-}
-
-extension String {
-    subscript (bounds: CountableClosedRange<Int>) -> String {
-        let start = index(startIndex, offsetBy: bounds.lowerBound)
-        let end = index(startIndex, offsetBy: bounds.upperBound)
-        return String(self[start...end])
     }
 }
