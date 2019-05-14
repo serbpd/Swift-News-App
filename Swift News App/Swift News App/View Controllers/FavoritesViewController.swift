@@ -1,5 +1,5 @@
 //
-//  SecondViewController.swift
+//  FavoritesViewController.swift
 //  Swift News App
 //
 //  Created by Paul on 4/23/19.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SecondViewController: UIViewController {
+class FavoritesViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()

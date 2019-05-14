@@ -137,6 +137,10 @@ class FeaturedViewController: UIViewController, UITableViewDelegate, UITableView
         cell.img.clipsToBounds = true
         cell.img.layer.cornerRadius = 3
         
+        if articles[indexPath.item].isFave ?? false {
+            cell.faveBtn.setImage(UIImage(named: "star_on"), for: .normal)
+        }
+        
         return cell
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

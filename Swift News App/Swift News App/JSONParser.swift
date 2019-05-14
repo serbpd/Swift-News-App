@@ -53,8 +53,16 @@ class JSONParser {
                 let content = article["content"] as? String
                 let s = article["source"] as! [String: Any]
                 let source = s["name"] as? String
+                var isFave = false
                 
-                let a = Article(pub: source ?? "", auth: author ?? "", title: title ?? "", descr: descr ?? "", img: imgURL ?? "", date: date ?? "", content: content ?? "")
+                let faves = getAllFaves()
+                if faves.count > 0 {
+                    for a in faves where (a.title == title && a.author == author && a.descr == descr) {
+                        isFave = true
+                    }
+                }
+                
+                let a = Article(pub: source ?? "", auth: author ?? "", title: title ?? "", descr: descr ?? "", img: imgURL ?? "", date: date ?? "", content: content ?? "", isFave: isFave)
                 self.resultArticles.append(a)
             }
             completion(self.resultArticles)

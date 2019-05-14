@@ -20,6 +20,7 @@ class ArticleViewController: UIViewController {
     @IBOutlet weak var contentTxtField: UITextView!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var contentView: UIView!
+    @IBOutlet weak var faveBtn: UIButton!
     
     override func viewDidLoad() {
         titleLbl.text = article?.title
@@ -36,5 +37,27 @@ class ArticleViewController: UIViewController {
         img.layer.cornerRadius = 15
         
         scrollView.contentSize = contentView.frame.size
+        
+        if article?.isFave ?? false {
+            faveBtn.setImage(UIImage(named: "star_on"), for: .normal)
+        }
+    }
+    
+    @IBAction func toggleFave(_ sender: Any) {
+        guard let ar = article else { return }
+        if ar.isFave {
+            removeFromFaves(article: ar)
+            faveBtn.setImage(UIImage(named: "star_off"), for: .normal)
+            ar.isFave = false
+            showToast(message: "Removed from favorites")
+        } else {
+            addToFaves(article: ar)
+            faveBtn.setImage(UIImage(named: "star_on"), for: .normal)
+            ar.isFave = true
+            showToast(message: "Added to favorites")
+        }
+        
+        guard let vc = navigationController?.viewControllers[0] as? FeaturedViewController else {return}
+        vc.tableView.reloadData()
     }
 }

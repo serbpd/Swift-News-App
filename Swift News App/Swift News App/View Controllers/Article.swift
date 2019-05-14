@@ -12,9 +12,34 @@ import UIKit
 class ArticleCell: UITableViewCell {
     @IBOutlet weak var img: UIImageView!
     @IBOutlet weak var title: UILabel!
+    @IBOutlet weak var faveBtn: UIButton!
 }
 
-class Article {
+class Article: NSObject, NSCoding {
+    func encode(with aCoder: NSCoder) {
+        aCoder.encode(publisher, forKey: "publisher")
+        aCoder.encode(author, forKey: "author")
+        aCoder.encode(title, forKey: "title")
+        aCoder.encode(descr, forKey: "descr")
+        aCoder.encode(imgURL, forKey: "imgURL")
+        aCoder.encode(img, forKey: "img")
+        aCoder.encode(date, forKey: "date")
+        aCoder.encode(content, forKey: "content")
+        aCoder.encode(isFave, forKey: "isFave")
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        publisher = aDecoder.decodeObject(forKey: "publisher") as? String
+        author = aDecoder.decodeObject(forKey: "author") as? String
+        title = aDecoder.decodeObject(forKey: "title") as? String
+        descr = aDecoder.decodeObject(forKey: "descr") as? String
+        imgURL = aDecoder.decodeObject(forKey: "imgURL") as? String
+        img = aDecoder.decodeObject(forKey: "img") as? UIImage
+        date = aDecoder.decodeObject(forKey: "date") as? String
+        content = aDecoder.decodeObject(forKey: "content") as? String
+        isFave = aDecoder.decodeObject(forKey: "isFave") as? Bool ?? false
+    }
+    
     var publisher: String?
     var author: String?
     var title: String?
@@ -23,14 +48,16 @@ class Article {
     var img: UIImage?
     var date: String?
     var content: String?
+    var isFave: Bool = false
     
-    public init(pub: String, auth: String, title: String, descr: String, img: String, date: String, content: String) {
+    public init(pub: String, auth: String, title: String, descr: String, img: String, date: String, content: String, isFave: Bool) {
         self.publisher = pub
         self.author = auth
         self.title = title
         self.descr = descr
         self.imgURL = img
         self.content = content
+        self.isFave = isFave
         
         let dateStr = date[0...9]
         let dateFormatterIn = DateFormatter()
@@ -55,10 +82,29 @@ class Article {
     }
 }
 
-extension String {
-    subscript (bounds: CountableClosedRange<Int>) -> String {
-        let start = index(startIndex, offsetBy: bounds.lowerBound)
-        let end = index(startIndex, offsetBy: bounds.upperBound)
-        return String(self[start...end])
+func addToFaves(article: Article) {
+    var faves = getAllFaves()
+    faves.append(article)
+    try? UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject: faves, requiringSecureCoding: false), forKey: "faves")
+}
+
+func removeFromFaves(article: Article) {
+    var faves = getAllFaves()
+    var index = 0
+    for a in faves {
+        if a.title == article.title && a.author == article.author && a.descr == article.descr {
+            faves.remove(at: index)
+        }
+        index += 1
     }
+    try? UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject: faves, requiringSecureCoding: false), forKey: "faves")
+}
+
+func getAllFaves() -> [Article] {
+    guard let data = UserDefaults.standard.value(forKey: "faves") as? NSData else {
+        UserDefaults.standard.set([], forKey: "faves")
+        return []
+    }
+    guard let faves = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data as Data) as! [Article] else {return []}
+    return faves
 }

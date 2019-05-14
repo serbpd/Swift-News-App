@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
     <device id="retina5_9" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -35,26 +35,37 @@
                                                         <constraint firstAttribute="width" secondItem="8hA-xm-1TG" secondAttribute="height" multiplier="1:1" id="KGl-Tj-rv0"/>
                                                     </constraints>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" minimumScaleFactor="0.80000000000000004" translatesAutoresizingMaskIntoConstraints="NO" id="dBS-5k-XQG">
-                                                    <rect key="frame" x="15" y="8.3333333333333286" width="196" height="150.33333333333337"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" translatesAutoresizingMaskIntoConstraints="NO" id="dBS-5k-XQG">
+                                                    <rect key="frame" x="10" y="42.000000000000007" width="197" height="121.66666666666669"/>
                                                     <fontDescription key="fontDescription" type="system" weight="medium" pointSize="18"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cuP-Vm-G0d">
+                                                    <rect key="frame" x="10" y="5" width="35" height="35"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" secondItem="cuP-Vm-G0d" secondAttribute="height" multiplier="1:1" id="m2K-Vl-uWF"/>
+                                                    </constraints>
+                                                    <state key="normal" image="star_off"/>
+                                                </button>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="8hA-xm-1TG" firstAttribute="leading" secondItem="dBS-5k-XQG" secondAttribute="trailing" multiplier="1.03" id="r2L-7Q-goG"/>
+                                                <constraint firstItem="dBS-5k-XQG" firstAttribute="top" secondItem="cuP-Vm-G0d" secondAttribute="bottom" multiplier="1.05" id="BTH-id-6Uj"/>
+                                                <constraint firstItem="8hA-xm-1TG" firstAttribute="leading" secondItem="dBS-5k-XQG" secondAttribute="trailing" multiplier="1.05" id="bYb-vG-cl1"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <constraints>
-                                            <constraint firstItem="dBS-5k-XQG" firstAttribute="leading" secondItem="OpX-lD-EIJ" secondAttribute="leading" constant="15" id="1DP-jL-kb4"/>
+                                            <constraint firstItem="dBS-5k-XQG" firstAttribute="leading" secondItem="OpX-lD-EIJ" secondAttribute="leading" constant="10" id="1DP-jL-kb4"/>
+                                            <constraint firstItem="cuP-Vm-G0d" firstAttribute="top" secondItem="OpX-lD-EIJ" secondAttribute="top" constant="5" id="22F-a8-FIU"/>
+                                            <constraint firstAttribute="bottom" secondItem="dBS-5k-XQG" secondAttribute="bottom" multiplier="1.02" id="5m2-Xt-UJL"/>
+                                            <constraint firstItem="cuP-Vm-G0d" firstAttribute="leading" secondItem="OpX-lD-EIJ" secondAttribute="leading" constant="10" id="6Xx-2e-Nsn"/>
                                             <constraint firstItem="8hA-xm-1TG" firstAttribute="centerY" secondItem="OpX-lD-EIJ" secondAttribute="centerY" id="HAN-8S-eiP"/>
-                                            <constraint firstItem="dBS-5k-XQG" firstAttribute="height" secondItem="OpX-lD-EIJ" secondAttribute="height" multiplier="0.9" id="SQ7-XV-NjC"/>
                                             <constraint firstAttribute="trailing" secondItem="8hA-xm-1TG" secondAttribute="trailing" multiplier="1.02" id="SrO-YB-izE"/>
-                                            <constraint firstItem="dBS-5k-XQG" firstAttribute="centerY" secondItem="OpX-lD-EIJ" secondAttribute="centerY" id="g9j-2m-Q4b"/>
+                                            <constraint firstItem="cuP-Vm-G0d" firstAttribute="width" secondItem="OpX-lD-EIJ" secondAttribute="height" multiplier="35:167" id="o3h-YN-WLe"/>
                                             <constraint firstItem="8hA-xm-1TG" firstAttribute="height" secondItem="OpX-lD-EIJ" secondAttribute="height" multiplier="0.9" id="r1P-Fi-MJU"/>
                                         </constraints>
                                         <connections>
+                                            <outlet property="faveBtn" destination="cuP-Vm-G0d" id="JZK-Za-yvU"/>
                                             <outlet property="img" destination="8hA-xm-1TG" id="3sf-YD-0eg"/>
                                             <outlet property="title" destination="dBS-5k-XQG" id="17a-cm-ERV"/>
                                         </connections>
@@ -183,6 +194,16 @@
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tCF-C5-Kh2">
+                                                <rect key="frame" x="314" y="128" width="50" height="50"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="tCF-C5-Kh2" secondAttribute="height" multiplier="1:1" id="vHa-pi-UKI"/>
+                                                </constraints>
+                                                <state key="normal" image="star_off"/>
+                                                <connections>
+                                                    <action selector="toggleFave:" destination="m1y-PU-DXs" eventType="touchUpInside" id="E4v-9n-dQV"/>
+                                                </connections>
+                                            </button>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
@@ -195,6 +216,7 @@
                                             <constraint firstItem="s3d-1e-zJn" firstAttribute="top" secondItem="DGz-1c-sL2" secondAttribute="top" constant="5" id="N7g-zP-zFH"/>
                                             <constraint firstItem="Kgc-mC-h9s" firstAttribute="centerX" secondItem="DGz-1c-sL2" secondAttribute="centerX" id="OcT-mK-gp8"/>
                                             <constraint firstItem="Gdu-1H-Pb0" firstAttribute="width" secondItem="DGz-1c-sL2" secondAttribute="width" multiplier="0.96" id="Ul1-BA-XsZ"/>
+                                            <constraint firstItem="tCF-C5-Kh2" firstAttribute="centerY" secondItem="Ivs-1t-FqB" secondAttribute="centerY" id="Vjb-i9-4he"/>
                                             <constraint firstItem="yWO-ju-MOc" firstAttribute="width" secondItem="DGz-1c-sL2" secondAttribute="width" multiplier="0.95" id="a5f-z1-qeK"/>
                                             <constraint firstItem="yWO-ju-MOc" firstAttribute="centerX" secondItem="DGz-1c-sL2" secondAttribute="centerX" id="fmu-nv-ses"/>
                                             <constraint firstItem="Kgc-mC-h9s" firstAttribute="top" secondItem="yWO-ju-MOc" secondAttribute="bottom" id="jCE-E3-Ixh"/>
@@ -220,7 +242,9 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="tCF-C5-Kh2" firstAttribute="width" secondItem="vTm-yQ-jct" secondAttribute="height" multiplier="1:18" id="FVT-Hs-E8d"/>
                             <constraint firstItem="61o-GE-UJY" firstAttribute="centerY" secondItem="rxv-ZE-goz" secondAttribute="centerY" id="IjK-EW-ZMi"/>
+                            <constraint firstItem="rxv-ZE-goz" firstAttribute="trailing" secondItem="tCF-C5-Kh2" secondAttribute="trailing" multiplier="1.03" id="KzO-h9-VDI"/>
                             <constraint firstItem="61o-GE-UJY" firstAttribute="centerX" secondItem="rxv-ZE-goz" secondAttribute="centerX" id="Z91-1B-aQH"/>
                             <constraint firstItem="61o-GE-UJY" firstAttribute="width" secondItem="vTm-yQ-jct" secondAttribute="width" id="byp-MX-4Fx"/>
                             <constraint firstItem="61o-GE-UJY" firstAttribute="height" secondItem="rxv-ZE-goz" secondAttribute="height" id="zgX-Nv-cPM"/>
@@ -234,6 +258,7 @@
                         <outlet property="contentView" destination="DGz-1c-sL2" id="4c9-q1-d58"/>
                         <outlet property="dateLbl" destination="Ivs-1t-FqB" id="7VY-Jz-2je"/>
                         <outlet property="descrLbl" destination="Gdu-1H-Pb0" id="1Q5-f3-W5C"/>
+                        <outlet property="faveBtn" destination="tCF-C5-Kh2" id="JpH-Ql-3Nj"/>
                         <outlet property="img" destination="yWO-ju-MOc" id="K3v-4S-05y"/>
                         <outlet property="scrollView" destination="61o-GE-UJY" id="sFE-N9-P7E"/>
                         <outlet property="titleLbl" destination="s3d-1e-zJn" id="eR2-bk-3n7"/>
@@ -246,7 +271,7 @@
         <!--Favorites-->
         <scene sceneID="wg7-f3-ORb">
             <objects>
-                <viewController id="8rJ-Kc-sve" customClass="SecondViewController" customModule="Swift_News_App" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="8rJ-Kc-sve" customClass="FavoritesViewController" customModule="Swift_News_App" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="QS5-Rx-YEW">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -298,7 +323,8 @@
         </scene>
     </scenes>
     <resources>
-        <image name="first" width="30" height="30"/>
-        <image name="second" width="30" height="30"/>
+        <image name="first" width="25" height="25"/>
+        <image name="second" width="25" height="25"/>
+        <image name="star_off" width="256" height="256"/>
     </resources>
 </document>
