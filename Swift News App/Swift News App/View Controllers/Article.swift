@@ -13,6 +13,7 @@ class ArticleCell: UITableViewCell {
     @IBOutlet weak var img: UIImageView!
     @IBOutlet weak var title: UILabel!
     @IBOutlet weak var faveBtn: UIButton!
+    var article: Article?
 }
 
 class Article: NSObject, NSCoding {
@@ -106,5 +107,8 @@ func getAllFaves() -> [Article] {
         return []
     }
     guard let faves = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data as Data) as! [Article] else {return []}
+    for art in faves {
+        art.isFave = true
+    }
     return faves
 }

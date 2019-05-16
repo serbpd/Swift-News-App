@@ -40,10 +40,18 @@ class ArticleViewController: UIViewController {
         
         if article?.isFave ?? false {
             faveBtn.setImage(UIImage(named: "star_on"), for: .normal)
+        } else {
+            faveBtn.setImage(UIImage(named: "star_off"), for: .normal)
         }
     }
     
     @IBAction func toggleFave(_ sender: Any) {
+        guard let btn = sender as? UIButton else { return }
+        btn.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
+        UIView.animate(withDuration: 1.3, delay: 0, usingSpringWithDamping: 0.15, initialSpringVelocity: 0.2, options: .curveLinear, animations: {
+            btn.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
+        })
+        
         guard let ar = article else { return }
         if ar.isFave {
             removeFromFaves(article: ar)
