@@ -8,10 +8,12 @@
 
 import UIKit
 
-class FeaturedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
+class FeaturedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, FaveBtnDelegate {
     
+    @IBOutlet weak var titleLbl: UILabel!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var filterBtn: UIButton!
     @IBOutlet weak var headlinesBtn: UIButton!
     @IBOutlet weak var favoritesBtn: UIButton!
     @IBOutlet weak var tabMarker: UIImageView!
@@ -122,9 +124,17 @@ class FeaturedViewController: UIViewController, UITableViewDelegate, UITableView
     }
     
     @IBAction func showHeadlines(_ sender: Any) {
+        self.searchBar.isUserInteractionEnabled = true
+        self.filterBtn.isUserInteractionEnabled = true
+
         UIView.animate(withDuration: 0.4, delay: 0.0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0, options: .curveEaseOut, animations: {
             self.tabMarkerHeadlineConstraint.priority = .defaultHigh
             self.tabMarkerFavoriteConstraint.priority = .defaultLow
+            self.headlinesBtn.setTitleColor(.white, for: .normal)
+            self.favoritesBtn.setTitleColor(UIColor(red: 0, green: 122/255, blue: 1, alpha: 1), for: .normal)
+            self.titleLbl.text = "Top Headlines"
+            self.searchBar.alpha = 1
+            self.filterBtn.alpha = 1
             self.view.layoutIfNeeded()
         })
         articles = headlineArticles
@@ -132,12 +142,21 @@ class FeaturedViewController: UIViewController, UITableViewDelegate, UITableView
     }
     
     @IBAction func showFavorites(_ sender: Any) {
+        tableView.setContentOffset(.zero, animated: false)
+        self.searchBar.isUserInteractionEnabled = false
+        self.filterBtn.isUserInteractionEnabled = false
+        
         UIView.animate(withDuration: 0.4, delay: 0.0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0, options: .curveEaseOut, animations: {
             self.tabMarkerHeadlineConstraint.priority = .defaultLow
             self.tabMarkerFavoriteConstraint.priority = .defaultHigh
+            self.headlinesBtn.setTitleColor(UIColor(red: 0, green: 122/255, blue: 1, alpha: 1), for: .normal)
+            self.favoritesBtn.setTitleColor(.white, for: .normal)
+            self.titleLbl.text = "Favorites"
+            self.searchBar.alpha = 0.2
+            self.filterBtn.alpha = 0.2
             self.view.layoutIfNeeded()
         })
-        articles = favoriteArticles
+        articles = getAllFaves()
         tableView.reloadData()
     }
     
@@ -186,14 +205,20 @@ class FeaturedViewController: UIViewController, UITableViewDelegate, UITableView
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "articleCell") as! ArticleCell
         cell.title.text = articles[indexPath.item].title
+        cell.index = indexPath
+        cell.delegate = self
+        
+        if indexPath.item % 2 == 0 || indexPath.item == 0 {
+            cell.backgroundColor = UIColor(red: 1.0, green: 0.77, blue: 0.28, alpha: 0.8)
+        } else {
+            cell.backgroundColor = UIColor(red: 1.0, green: 0.77, blue: 0.28, alpha: 0.3)
+        }
         
         guard let image = articles[indexPath.item].img else { return cell }
         cell.img.image = image
         cell.img.clipsToBounds = true
         cell.img.layer.cornerRadius = 3
-        
-        cell.faveBtn.addTarget(self, action: #selector(toggleFave(_:)), for: .touchUpInside)
-        
+                
         if articles[indexPath.item].isFave {
             cell.faveBtn.setImage(UIImage(named: "star_on"), for: .normal)
         } else {
@@ -218,9 +243,9 @@ class FeaturedViewController: UIViewController, UITableViewDelegate, UITableView
         })
     }
     
-    @objc func toggleFave(_ sender: UIButton) {
-        guard let cell = sender.superview?.superview as? ArticleCell, let ar = cell.article, let index = tableView.indexPath(for: cell) else { return }
-        
+    func toggleFave(_ index: IndexPath) {
+        guard let cell = tableView.cellForRow(at: index) as? ArticleCell else { return }
+        let ar = articles[index.item]
         if ar.isFave {
             removeFromFaves(article: ar)
             favoriteArticles.remove(at: index.item)
@@ -234,7 +259,6 @@ class FeaturedViewController: UIViewController, UITableViewDelegate, UITableView
             ar.isFave = true
             showToast(message: "Added to favorites")
         }
-        
         guard let vc = navigationController?.viewControllers[0] as? FeaturedViewController else {return}
         vc.tableView.reloadData()
     }

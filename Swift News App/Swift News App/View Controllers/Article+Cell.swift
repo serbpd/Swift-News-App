@@ -1,5 +1,5 @@
 //
-//  Article.swift
+//  Article+Cell.swift
 //  Swift News App
 //
 //  Created by Paul on 5/8/19.
@@ -14,6 +14,15 @@ class ArticleCell: UITableViewCell {
     @IBOutlet weak var title: UILabel!
     @IBOutlet weak var faveBtn: UIButton!
     var article: Article?
+    var index: IndexPath!
+    var delegate: FaveBtnDelegate?
+    
+    @IBAction func faveBtnTapped() {
+        self.delegate?.toggleFave(index)
+    }
+}
+protocol FaveBtnDelegate: class {
+    func toggleFave(_ index: IndexPath)
 }
 
 class Article: NSObject, NSCoding {
@@ -111,4 +120,12 @@ func getAllFaves() -> [Article] {
         art.isFave = true
     }
     return faves
+}
+
+extension Array where Element: Article {
+    mutating func removeArticleFromFaves(article: Article) {
+        for a in self where a.title == article.title && a.author == article.author && a.descr == article.descr {
+            a.isFave = false
+        }
+    }
 }

@@ -8,8 +8,9 @@
 
 import Foundation
 import UIKit
+import DropDown
 
-class FilterPopup: UIView, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate {
+class FilterPopup: UIView, UITextFieldDelegate {
     
     @IBOutlet var popupView: UIView!
     @IBOutlet weak var countryTxtField: UITextField!
@@ -18,7 +19,7 @@ class FilterPopup: UIView, UIPickerViewDelegate, UIPickerViewDataSource, UITextF
     @IBOutlet weak var sortTxtField: UITextField!
     @IBOutlet weak var cancelBtn: UIButton!
     @IBOutlet weak var searchBtn: UIButton!
-    var pickerView: UIPickerView = UIPickerView(frame: .zero)
+    var dropDown: DropDown = DropDown(frame: .zero)
     var selectedArray: [(name: String, code: String)]!
     var selectedTxtField: UITextField!
     
@@ -43,16 +44,32 @@ class FilterPopup: UIView, UIPickerViewDelegate, UIPickerViewDataSource, UITextF
         popupView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         addSubview(popupView)
         
-        pickerView.delegate = self
-        pickerView.dataSource = self
         countryTxtField.delegate = self
         catTxtField.delegate = self
         srcTxtField.delegate = self
         sortTxtField.delegate = self
+        
+        dropDown.direction = .bottom
+        dropDown.cornerRadius = 10
+        dropDown.dismissMode = .onTap
+        dropDown.selectionBackgroundColor = .orange
+        dropDown.selectionAction = { (index, item) in
+            //fill the tapped field with selected text, and build parameters for a new search request
+            self.selectedTxtField.text = self.selectedArray[index].name
+            if self.selectedTxtField == self.countryTxtField {
+                JSONParser.shared.paramCountry = self.selectedArray[index].code
+            } else if self.selectedTxtField == self.catTxtField {
+                JSONParser.shared.paramCat = self.selectedArray[index].code
+            } else if self.selectedTxtField == self.srcTxtField {
+                JSONParser.shared.paramSrc = self.selectedArray[index].code
+            } else if self.selectedTxtField == self.sortTxtField {
+                JSONParser.shared.paramSort = self.selectedArray[index].code
+            }
+        }
     }
     
     @IBAction func clearFilters(_ sender: UIButton) {
-        pickerView.removeFromSuperview()
+        dropDown.hide()
         JSONParser.shared.clearParams()
         countryTxtField.text = ""
         catTxtField.text = ""
@@ -73,17 +90,14 @@ class FilterPopup: UIView, UIPickerViewDelegate, UIPickerViewDataSource, UITextF
             selectedArray = sorts
         }
         selectedTxtField = textField
-        pickerView.removeFromSuperview()
-        superview?.addSubview(pickerView)
-        pickerView.reloadAllComponents()
-        pickerView.tag = 1337
+        //dropDown.hide()
+        dropDown.show()
+        dropDown.dataSource = selectedArray.map{ $0.name }
+        dropDown.anchorView = selectedTxtField
+        dropDown.bottomOffset = CGPoint(x: 0, y:(dropDown.anchorView?.plainView.bounds.height)!)
+        dropDown.reloadAllComponents()
+        dropDown.tag = 1337
         textField.endEditing(true)
-        
-        pickerView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint(item: pickerView, attribute: .bottom, relatedBy: .equal, toItem: superview, attribute: .bottom, multiplier: 1.0, constant: 0).isActive = true
-        NSLayoutConstraint(item: pickerView, attribute: .width, relatedBy: .equal, toItem: superview, attribute: .width, multiplier: 1.0, constant: 0).isActive = true
-        NSLayoutConstraint(item: pickerView, attribute: .centerX, relatedBy: .equal, toItem: superview, attribute: .centerX, multiplier: 1.0, constant: 0).isActive = true
-        NSLayoutConstraint(item: pickerView, attribute: .height, relatedBy: .equal, toItem: superview, attribute: .height, multiplier: 0.3, constant: 0).isActive = true
     }
     
     //pickerView delegate functions

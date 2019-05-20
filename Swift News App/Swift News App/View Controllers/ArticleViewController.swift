@@ -52,9 +52,10 @@ class ArticleViewController: UIViewController {
             btn.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
         })
         
-        guard let ar = article else { return }
+        guard let ar = article, let prevVC = navigationController?.viewControllers[0] as? FeaturedViewController else { return }
         if ar.isFave {
             removeFromFaves(article: ar)
+            prevVC.headlineArticles.removeArticleFromFaves(article: ar)
             faveBtn.setImage(UIImage(named: "star_off"), for: .normal)
             ar.isFave = false
             showToast(message: "Removed from favorites")
