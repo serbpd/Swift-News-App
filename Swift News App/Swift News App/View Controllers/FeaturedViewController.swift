@@ -24,6 +24,7 @@ class FeaturedViewController: UIViewController, UITableViewDelegate, UITableView
     var headlineArticles: [Article] = []
     var favoriteArticles: [Article] = []
     var query = ""
+    var showingFaves = false
     let blurEffect = UIBlurEffect(style: .dark)
     let blurEffectView = UIVisualEffectView()
     let filterView = FilterPopup()
@@ -124,6 +125,7 @@ class FeaturedViewController: UIViewController, UITableViewDelegate, UITableView
     }
     
     @IBAction func showHeadlines(_ sender: Any) {
+        showingFaves = false
         self.searchBar.isUserInteractionEnabled = true
         self.filterBtn.isUserInteractionEnabled = true
 
@@ -142,6 +144,7 @@ class FeaturedViewController: UIViewController, UITableViewDelegate, UITableView
     }
     
     @IBAction func showFavorites(_ sender: Any) {
+        showingFaves = true
         tableView.setContentOffset(.zero, animated: false)
         self.searchBar.isUserInteractionEnabled = false
         self.filterBtn.isUserInteractionEnabled = false
@@ -224,6 +227,11 @@ class FeaturedViewController: UIViewController, UITableViewDelegate, UITableView
         } else {
             cell.faveBtn.setImage(UIImage(named: "star_off"), for: .normal)
         }
+        if showingFaves {
+            cell.faveBtn.isHidden = true
+        } else {
+            cell.faveBtn.isHidden = false
+        }
         cell.article = articles[indexPath.item]
         
         return cell
@@ -259,7 +267,7 @@ class FeaturedViewController: UIViewController, UITableViewDelegate, UITableView
             ar.isFave = true
             showToast(message: "Added to favorites")
         }
-        guard let vc = navigationController?.viewControllers[0] as? FeaturedViewController else {return}
-        vc.tableView.reloadData()
+//        guard let vc = navigationController?.viewControllers[0] as? FeaturedViewController else {return}
+//        vc.tableView.reloadData()
     }
 }

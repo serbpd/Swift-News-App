@@ -77,7 +77,7 @@ class FilterPopup: UIView, UITextFieldDelegate {
         sortTxtField.text = ""
     }
     
-    //when a text field is tapped, bring up a picker view with choices based on the tapped field
+    //when a text field is tapped, bring up a dropdown with choices based on the tapped field
     //keep track of the selection
     func textFieldDidBeginEditing(_ textField: UITextField) {
         if textField == countryTxtField {
@@ -90,12 +90,11 @@ class FilterPopup: UIView, UITextFieldDelegate {
             selectedArray = sorts
         }
         selectedTxtField = textField
-        //dropDown.hide()
-        dropDown.show()
         dropDown.dataSource = selectedArray.map{ $0.name }
         dropDown.anchorView = selectedTxtField
         dropDown.bottomOffset = CGPoint(x: 0, y:(dropDown.anchorView?.plainView.bounds.height)!)
         dropDown.reloadAllComponents()
+        dropDown.show()
         dropDown.tag = 1337
         textField.endEditing(true)
     }
