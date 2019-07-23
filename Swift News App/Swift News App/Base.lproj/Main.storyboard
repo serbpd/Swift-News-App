@@ -92,7 +92,7 @@
                                     <string>Title</string>
                                 </scopeButtonTitles>
                             </searchBar>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Bhw-4O-1QL">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Bhw-4O-1QL" customClass="BouncyButton" customModule="Swift_News_App" customModuleProvider="target">
                                 <rect key="frame" x="347.33333333333331" y="117.00000000000001" width="50.666666666666686" height="31.666666666666671"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="Bhw-4O-1QL" secondAttribute="height" multiplier="8:5" id="7Ja-Uc-lya"/>

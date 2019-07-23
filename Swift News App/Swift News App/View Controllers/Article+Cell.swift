@@ -79,17 +79,6 @@ class Article: NSObject, NSCoding {
             self.date = dateFormatterOut.string(from: newDate)
         }
     }
-    
-    public func setImage(table: UITableView) {
-        guard let url = URL(string: self.imgURL!) else { return }
-        URLSession.shared.dataTask(with: url, completionHandler: { data,_,_ in
-            guard let imgData = data, let img = UIImage(data: imgData) else { return }
-            DispatchQueue.main.async {
-                self.img = img
-                table.reloadData()
-            }
-        }).resume()
-    }
 }
 
 func addToFaves(article: Article) {

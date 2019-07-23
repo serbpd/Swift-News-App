@@ -41,17 +41,34 @@ class FeaturedViewController: UIViewController, UITableViewDelegate, UITableView
         searchBar.delegate = self
         blurEffectView.effect = blurEffect
         
+        showLoading()
         JSONParser.shared.getArticles(table: tableView, { result in
             self.articles = result
             self.headlineArticles = self.articles
             
-            for art in self.articles {
-                art.setImage(table: self.tableView)
-            }
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
+            self.getAllImages {
+                DispatchQueue.main.async {
+                    self.removeLoading()
+                    self.tableView.reloadData()
+                }
             }
         })
+    }
+    
+    func getAllImages(_ completion: @escaping() -> Void) {
+        var index = 1
+        for art in articles {
+            guard let url = URL(string: art.imgURL!) else { continue }
+            let data = try? Data(contentsOf: url)
+            if let imgData = data {
+                art.img = UIImage(data: imgData)!
+            }
+            
+            if index == (articles.count - 1) {
+                completion()
+            }
+            index += 1
+        }
     }
     
     @IBAction func showFilters(_ sender: Any) {
@@ -111,15 +128,16 @@ class FeaturedViewController: UIViewController, UITableViewDelegate, UITableView
         if let picker = view.viewWithTag(1337) {
             picker.removeFromSuperview()
         }
+        self.showLoading()
         JSONParser.shared.getArticles(table: tableView, query: query, { result in
             self.articles = result
             self.headlineArticles = self.articles
             
-            for art in self.articles {
-                art.setImage(table: self.tableView)
-            }
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
+            self.getAllImages {
+                DispatchQueue.main.async {
+                    self.removeLoading()
+                    self.tableView.reloadData()
+                }
             }
         })
     }
@@ -167,32 +185,35 @@ class FeaturedViewController: UIViewController, UITableViewDelegate, UITableView
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let text = searchBar.text, text != "" else { return }
         query = text
+        self.showLoading()
         JSONParser.shared.getArticles(table: tableView, query: text, { result in
             self.articles = result
             self.headlineArticles = self.articles
             
-            for art in self.articles {
-                art.setImage(table: self.tableView)
+            self.getAllImages {
+                DispatchQueue.main.async {
+                    self.removeLoading()
+                    self.tableView.reloadData()
+                    searchBar.resignFirstResponder()
+                }
             }
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-                searchBar.resignFirstResponder()
-            }
+            
         })
     }
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText == "" {
             query = ""
+            self.showLoading()
             JSONParser.shared.getArticles(table: tableView, { result in
                 self.articles = result
                 self.headlineArticles = self.articles
                 
-                for art in self.articles {
-                    art.setImage(table: self.tableView)
-                }
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                    searchBar.resignFirstResponder()
+                self.getAllImages {
+                    DispatchQueue.main.async {
+                        self.removeLoading()
+                        self.tableView.reloadData()
+                        searchBar.resignFirstResponder()
+                    }
                 }
             })
         }
@@ -216,11 +237,6 @@ class FeaturedViewController: UIViewController, UITableViewDelegate, UITableView
         } else {
             cell.backgroundColor = UIColor(red: 1.0, green: 0.77, blue: 0.28, alpha: 0.3)
         }
-        
-        guard let image = articles[indexPath.item].img else { return cell }
-        cell.img.image = image
-        cell.img.clipsToBounds = true
-        cell.img.layer.cornerRadius = 3
                 
         if articles[indexPath.item].isFave {
             cell.faveBtn.setImage(UIImage(named: "star_on"), for: .normal)
@@ -233,6 +249,11 @@ class FeaturedViewController: UIViewController, UITableViewDelegate, UITableView
             cell.faveBtn.isHidden = false
         }
         cell.article = articles[indexPath.item]
+        
+        guard let image = articles[indexPath.item].img else { cell.img.image = UIImage(named: "noImg"); return cell }
+        cell.img.image = image
+        cell.img.clipsToBounds = true
+        cell.img.layer.cornerRadius = 3
         
         return cell
     }
