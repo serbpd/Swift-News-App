@@ -78,6 +78,15 @@ extension UIViewController {
 }
 
 class BouncyButton: UIButton {
+    @IBInspectable var cornerRadius: CGFloat {
+        get {
+            return layer.cornerRadius
+        }
+        set {
+            layer.cornerRadius = newValue
+            layer.masksToBounds = newValue > 0
+        }
+    }
     override func sendAction(_ action: Selector, to target: Any?, for event: UIEvent?) {
         super.sendAction(action, to: target, for: event)
         self.transform = CGAffineTransform(scaleX: 0.75, y: 0.75)

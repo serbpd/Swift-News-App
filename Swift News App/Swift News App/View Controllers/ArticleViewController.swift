@@ -43,6 +43,8 @@ class ArticleViewController: UIViewController {
         } else {
             faveBtn.setImage(UIImage(named: "star_off"), for: .normal)
         }
+        
+        navigationController?.isNavigationBarHidden = false
     }
     
     @IBAction func toggleFave(_ sender: Any) {

@@ -22,16 +22,15 @@ class FeaturedViewController: UIViewController, UITableViewDelegate, UITableView
     
     var articles: [Article] = []
     var headlineArticles: [Article] = []
-    var favoriteArticles: [Article] = []
     var query = ""
     var showingFaves = false
     let blurEffect = UIBlurEffect(style: .dark)
     let blurEffectView = UIVisualEffectView()
     let filterView = FilterPopup()
+    var isFirstLoad = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        favoriteArticles = getAllFaves()
         
         tabMarker.clipsToBounds = true
         tabMarker.layer.cornerRadius = 10
@@ -53,6 +52,18 @@ class FeaturedViewController: UIViewController, UITableViewDelegate, UITableView
                 }
             }
         })
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        //navigationController?.isNavigationBarHidden = true
+        if !isFirstLoad && showingFaves {
+            articles = getAllFaves()
+            tableView.reloadData()
+        } else {
+            isFirstLoad = false
+        }
     }
     
     func getAllImages(_ completion: @escaping() -> Void) {
@@ -277,13 +288,11 @@ class FeaturedViewController: UIViewController, UITableViewDelegate, UITableView
         let ar = articles[index.item]
         if ar.isFave {
             removeFromFaves(article: ar)
-            favoriteArticles.remove(at: index.item)
             cell.faveBtn.setImage(UIImage(named: "star_off"), for: .normal)
             ar.isFave = false
             showToast(message: "Removed from favorites")
         } else {
             addToFaves(article: ar)
-            favoriteArticles.append(ar)
             cell.faveBtn.setImage(UIImage(named: "star_on"), for: .normal)
             ar.isFave = true
             showToast(message: "Added to favorites")
